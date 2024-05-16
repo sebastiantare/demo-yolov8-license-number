@@ -20,7 +20,7 @@ body {
 .table-container {
   float: left;
   width: 50%;
-  display: grid;
+  display: block;
 }
 
 table {
