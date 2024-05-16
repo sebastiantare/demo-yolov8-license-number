@@ -8,7 +8,7 @@ You can find the model here: https://github.com/sebastiantare/demo-yolov8-licens
 
 ## Install
 
-- Download a video and save it to the src folder, replace the name in the app.py.
+- Download a video and save it to the src folder, replace the name in the app.py. In my case I'm using car videos from this channel: https://www.youtube.com/@CarsyTuning
 
 ```
 python -m venv env
