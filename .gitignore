@@ -1,0 +1,21 @@
+# Flask project exclusions
+__pycache__/
+*.py[cod]  # Compiled Python files
+env.py     # Optional virtual environment configuration
+
+# Virtual environment (adjust based on your tool)
+# If using venv:
+venv/
+
+# If using virtualenv:
+.venv/
+
+# If using pipenv:
+.venv/
+
+# Database files (adjust based on your database)
+# For SQLite, uncomment the following line:
+# *.db
+
+# MP4 files
+*.mp4
