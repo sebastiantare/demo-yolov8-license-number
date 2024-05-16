@@ -17,4 +17,4 @@ cd src
 python app.py
 ```
 
-Open: (localhost:5000){http://localhost:5000}
+Open: http://localhost:5000
