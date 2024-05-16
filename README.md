@@ -1,6 +1,6 @@
 # YoloV8 Car Plate Number detection
 
-This is a demo project that uses Yolov8 and Flask to do a psudo-streaming of the processed frames with Yolo and also the detected licenses to the webpage.
+This is a demo project that uses Yolov8 for license plate detection, cv2 for processing, easyocr for number detection and Flask to do a psudo-streaming of the processed frames to the website.
 
 I'm using Yolov8 default model for car detection, easyocr and a model I trined myself using Chilean car plates datasets from roboflow.
 
