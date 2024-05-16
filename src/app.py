@@ -62,7 +62,8 @@ class Demo:
 
     def getFPS(self):
         end_time = time.time()
-        return (end_time - self.start_time) / self.frames_sent
+        elapsed = end_time - self.start_time
+        return int(self.frames_sent/elapsed)
 
     def getNextFrame(self):
         ret, frame = self.cap.read()
@@ -156,7 +157,8 @@ def image():
             demo.getNextFrame()
             end_time = time.time()
             if end_time - start_time > 3:
-                print(f"FPS: {demo.getFPS()}")
+                print(
+                    f"FPS: {demo.getFPS()}")
                 start_time = end_time
 
 
