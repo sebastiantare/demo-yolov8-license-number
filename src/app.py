@@ -1,17 +1,13 @@
 import cv2
 import base64
-import io
-from PIL import Image
 import numpy as np
 from flask_socketio import emit, SocketIO
 from flask import Flask, render_template
 from ultralytics import YOLO
-import cv2
 from sort.sort import Sort
-import numpy as np
-from util import get_car, read_license_plate, write_csv
+from util import get_car, read_license_plate
 import time
-from time import sleep
+import datetime
 
 # app = Flask(__name__, template_folder="templates")
 app = Flask(__name__, template_folder="templates",
@@ -25,6 +21,7 @@ class Demo:
         self.license_plate_detector = YOLO('./model/best.pt', verbose=False)
         self.mot_tracker = Sort()
         self.cap = cv2.VideoCapture('./supercars-cut.mp4')
+        # 2: car, 3: motorbike, 5: bus, 6:train, 7: truck
         self.vehicles = [2, 3, 5, 6, 7]  # coco.names
         self.ret = True
         self.frame_number = -1
@@ -32,6 +29,8 @@ class Demo:
         self.start_time = 0
 
     def formatLicensePlate(self, text: str):
+        # Returns the license formatted if is a valid license
+
         if not text:
             return
 
@@ -46,16 +45,17 @@ class Demo:
         # Is valid license
         if len(clean_text) == 6:
             # TODO: Add more validation for chilean license plates
-            if clean_text[-2:].isnumeric():
+            if clean_text[-2:].isnumeric() and not clean_text[2:].isnumeric():
                 return (clean_text)
         elif len(clean_text) > 6:
             clean_text = clean_text[:6]
-            if clean_text[-2:].isnumeric():
+            if clean_text[-2:].isnumeric() and not clean_text[2:].isnumeric():
                 return (clean_text)
         return None
 
     def isReady(self):
-        if self.coco_model and self.license_plate_detector and self.mot_tracker and self.cap.isOpened():
+        if self.coco_model and self.license_plate_detector and \
+                self.mot_tracker and self.cap.isOpened():
             return True
         print('Not Ready')
         return False
@@ -125,7 +125,12 @@ class Demo:
             valid_license = self.formatLicensePlate(license_plate_text)
 
             if valid_license:
-                emit('license_plate', valid_license)
+                json_detection = {
+                    'license_text': valid_license,
+                    'category': str(class_id),
+                    'date': str(datetime.datetime.now())
+                    }
+                emit('detection', json_detection)
 
             self.frames_sent += 1
 
@@ -153,13 +158,17 @@ def image():
     if demo and demo.isReady():
         demo.start_time = time.time()
         start_time = time.time()
-        while demo.ret:
-            demo.getNextFrame()
-            end_time = time.time()
-            if end_time - start_time > 3:
-                print(
-                    f"FPS: {demo.getFPS()}")
-                start_time = end_time
+
+        try:
+            while demo.ret:
+                demo.getNextFrame()
+                end_time = time.time()
+                if end_time - start_time > 3:
+                    print(
+                        f"FPS: {demo.getFPS()}")
+                    start_time = end_time
+        except Exception as e:
+            print(f"Exception {e}")
 
 
 @app.route("/")

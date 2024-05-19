@@ -16,7 +16,25 @@ socket.on('connect', function() {
   console.log("Connection has been succesfully established with socket.", socket.connected)
 });
 
-socket.on('license_plate', function(text) {
+socket.on('detection', function(json_data) {
+
+  var text = json_data['license_text'];
+  var category = json_data['category'];
+  var vehicle_type = 'Auto';
+  //# 2: car, 3: motorbike, 5: bus, 6:train, 7: truck
+
+  switch(category) {
+    case '2':
+      vehicle_type = "Auto";
+    case '3':
+      vehicle_type = "Moto";
+    case '5':
+      vehicle_type = "Bus";
+    case '6':
+      vehicle_type = "Tren";
+    case '7':
+      vehicle_type = "Camión";
+  }
 
   if (text in license_plates) {
     license_plates[text] += 1;
@@ -46,6 +64,10 @@ socket.on('license_plate', function(text) {
     const countCell = document.createElement('td');
     countCell.textContent = license_plates[text];
     newRow.appendChild(countCell);
+
+    const categoryCell = document.createElement('td');
+    categoryCell.textContent = vehicle_type;
+    newRow.appendChild(categoryCell);
 
     tableBody.appendChild(newRow);
     rows_hashmap[text] = newRow;

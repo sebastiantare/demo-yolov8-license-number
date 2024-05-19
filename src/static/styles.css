@@ -2,33 +2,76 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-}
-
-.canvas {
-  background-color: 'black';
+  background-color: #f0f0f0;
+  /* Light grey background */
 }
 
 .container {
-  width: 100%;
+  max-width: 1200px;
+  /* Maximum container width */
+  margin: auto;
+  /* Center the container */
   display: flex;
+  flex-wrap: wrap;
+  /* Allow items to wrap */
+  justify-content: space-between;
+  /* Space between items */
+}
+
+canvas {
+  width: 100%;
 }
 
 .video {
-  float: left;
+  flex-basis: calc(50% - 10px);
+  /* Adjust based on screen size */
+  overflow: hidden;
+  /* Prevent canvas from overflowing */
 }
 
 .table-container {
-  float: left;
-  width: 50%;
+  flex-basis: calc(50% - 10px);
+  /* Adjust based on screen size */
+  overflow: auto;
+  /* Enable scrolling if content overflows */
   display: block;
 }
 
 table {
   width: 100%;
-  clear: both;
+  border-collapse: collapse;
+  /* Remove double borders */
+}
+
+th,
+td {
+  text-align: left;
+  /* Align text to the left */
+  padding: 8px;
+  /* Add padding */
 }
 
 button {
-  clear: both;
-  margin-top: 20px;
+  display: block;
+  margin: 20px auto;
+  /* Center button */
+  padding: 10px 20px;
+  /* Increase padding */
+  background-color: #007bff;
+  /* Blue background */
+  color: white;
+  /* White text */
+  border: none;
+  /* No border */
+  cursor: pointer;
+  /* Pointer cursor on hover */
+}
+
+@media (max-width: 768px) {
+
+  .video,
+  .table-container {
+    flex-basis: 100%;
+    /* Full width on small screens */
+  }
 }
