@@ -95,8 +95,8 @@ def read_license_plate(license_plate_crop):
 
         text = text.upper().replace(' ', '')
 
-        #if license_complies_format(text):
-        #return format_license(text), score
+        # if license_complies_format(text):
+        # return format_license(text), score
         return text, score
 
     return None, None
@@ -108,7 +108,8 @@ def get_car(license_plate, vehicle_track_ids):
     foundIt = False
     for j in range(len(vehicle_track_ids)):
         xcar1, ycar1, xcar2, ycar2, car_id = vehicle_track_ids[j]
-        if x1 >= xcar1 and y1 >= ycar1 and x2 <= xcar2 and y2 <= ycar2:
+
+        if x1 > xcar1 and y1 > ycar1 and x2 < xcar2 and y2 < ycar2:
             car_indx = j
             foundIt = True
             break

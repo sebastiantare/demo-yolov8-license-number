@@ -11,19 +11,22 @@ var license_plates = {};
 
 var rows_hashmap = {};
 
+var frame_number = -1;
+var frame_licenses = {};
 
 socket.on('connect', function() {
   console.log("Connection has been succesfully established with socket.", socket.connected)
 });
 
-socket.on('detection', function(json_data) {
-
-  var text = json_data['license_text'];
+function addLicenseToTable(json_data) {
+  var text = json_data['text'];
   var category = json_data['category'];
   var vehicle_type = 'Auto';
   //# 2: car, 3: motorbike, 5: bus, 6:train, 7: truck
 
-  switch(category) {
+  console.log(text);
+
+  switch (category) {
     case '2':
       vehicle_type = "Auto";
     case '3':
@@ -42,6 +45,9 @@ socket.on('detection', function(json_data) {
     license_plates[text] = 1;
   }
 
+  // Improve visual confidence of scores.
+  if (license_plates[text] < 5) return;
+
   const tableBody = document.getElementById('licensePlateTableBody');
 
   let targetRow = rows_hashmap[text];
@@ -49,6 +55,10 @@ socket.on('detection', function(json_data) {
   if (targetRow) {
     const countCell = targetRow.cells[2];
     countCell.textContent = license_plates[text];
+
+    const categoryCell = targetRow.cells[3];
+    categoryCell.textContent = vehicle_type;
+
   } else {
     const newRow = document.createElement('tr');
 
@@ -91,10 +101,27 @@ socket.on('detection', function(json_data) {
       tableBody.appendChild(row);
     });
   }
+}
+
+socket.on('detection', function(json_data) {
+
+  var text = json_data['license_text'];
+  var category = json_data['category'];
+  var date = json_data['date'];
+  var frame = json_data['frame'];
+
+  console.log('new license', text, category, date, frame);
+
+  frame_licenses[frame] = { 'text': text, 'category': parseInt(category) };
 
 });
 
-socket.on('response_back', function(image) {
+socket.on('response_back', function(data) {
+  var image = data['stringData'];
+  frame_number = data['frame'];
+
+  if (frame_number in frame_licenses) addLicenseToTable(frame_licenses[frame_number]);
+
   buffer.push(image);
 });
 
